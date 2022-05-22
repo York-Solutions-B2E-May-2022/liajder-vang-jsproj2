@@ -107,29 +107,6 @@ function getValidateJSON(data) {
     }
 }
 
-// function getValidJSON(data) {
-//     return `
-//     <div>
-//         <p>object_or_array: ${data['object_or_array']}</p>
-//         <p>empty: ${data.empty}</p>
-//         <p>parse_time_nanoseconds: ${data['parse_time_nanoseconds']}</p>
-//         <p>validate: ${data.validate}</p>
-//         <p>size: ${data.size}</p>
-//     </div>
-//     `
-// }
-
-// function getInvalidJSON(data) {
-//     return `
-//     <div>
-//         <p>error: ${data.error}</p>
-//         <p>object_or_array: ${data['object_or_array']}</p>
-//         <p>error_info: ${data['error_info']}</p>
-//         <p>validate: ${data.validate}</p>
-//     </div>
-//     `
-// }
-
 async function renderValidateJSON(text) {
     //redundant
     const validJSON = getValidateJSON(
