@@ -131,6 +131,7 @@ function getValidateJSON(data) {
 // }
 
 async function renderValidateJSON(text) {
+    //redundant
     const validJSON = getValidateJSON(
         await urlFetch(`http://validate.jsontest.com/?json=${text}`))
     return validJSON
