@@ -17,9 +17,6 @@ if (submitElem !== null) {
         event.preventDefault();
         const formData = new FormData(submitElem);
 
-        await renderIPAddress()
-        await renderHTMLHeaders()
-
         document.getElementById('valid-JSON').innerHTML = await renderValidateJSON(formData.get('text-input'))
         document.getElementById('md5').innerHTML = await renderMD5(formData.get("md5-input"))
     })
@@ -27,6 +24,24 @@ if (submitElem !== null) {
 
 function getIP(data) {
     return data?.ip;
+}
+
+function test_getIP_should_return_value() {
+    // arrange
+    const expected = true
+    const obj = {
+        ip: true
+    }
+
+    // act
+    const result = getIP(obj)
+
+    // assert
+    if (result !== expected) {
+        console.log(`test_getIP_should_return_value - failed`)
+    } else {
+        console.log(`test_getIP_should_return_value - passed`)
+    }
 }
 
 async function renderIPAddress() {
@@ -41,19 +56,11 @@ async function renderIPAddress() {
 }
 
 function createHTMLHeaders(data) {
-    console.log(data)
-    return `
-    <div>
-        <p>X-Cloud-Trace-Context: ${data['X-Cloud-Trace-Context']}</p>
-        <p>Accept: ${data.Accept}</p>
-        <p>Upgrade-Insecure-Requests: ${data['Upgrade-Insecure-Requests']}</p>
-        <p>traceparent: ${data['traceparent']}</p>
-        <p>User-Agent: ${data['User-Agent']}</p>
-        <p>Referer: ${data['Referer']}</p>
-        <p>Host: ${data.Host}</p>
-        <p>Accept-Language: ${data['Accept-Language']}</p>
-    </div>
-    `;
+    let str = ''
+    for (let property in data) {
+        str += `${property} : ${data[property]}` + `<br>`
+    }
+    return str
 }
 
 async function renderHTMLHeaders() {
@@ -66,11 +73,12 @@ async function renderHTMLHeaders() {
 }
 
 function getDateTime(data) {
+    console.log(data.time)
     return `
     <div>
-        <p>time: ${data.time}</p>
+        <p>time: ${data?.time}</p>
         <p>milliseconds_since_epoch: ${data['milliseconds_since_epoch']}</p>
-        <p>date: ${data.date}</p>
+        <p>date: ${data?.date}</p>
     </div>
     `
 }
@@ -82,36 +90,37 @@ async function renderDateTime() {
         document.getElementById('date-time').innerHTML = data
     }
 }
-setInterval(renderDateTime, 1000)
+//setInterval(renderDateTime, 1000)
 
 function getValidateJSON(data) {
     if (data.validate) {
         return `
     <div>
         <p>object_or_array: ${data['object_or_array']}</p>
-        <p>empty: ${data.empty}</p>
+        <p>empty: ${data?.empty}</p>
         <p>parse_time_nanoseconds: ${data['parse_time_nanoseconds']}</p>
-        <p>validate: ${data.validate}</p>
-        <p>size: ${data.size}</p>
+        <p>validate: ${data?.validate}</p>
+        <p>size: ${data?.size}</p>
     </div>
     `
     } else {
         return `
     <div>
-        <p>error: ${data.error}</p>
+        <p>error: ${data?.error}</p>
         <p>object_or_array: ${data['object_or_array']}</p>
         <p>error_info: ${data['error_info']}</p>
-        <p>validate: ${data.validate}</p>
+        <p>validate: ${data?.validate}</p>
     </div>
     `
     }
 }
 
 async function renderValidateJSON(text) {
-    //redundant
     const validJSON = getValidateJSON(
         await urlFetch(`http://validate.jsontest.com/?json=${text}`))
-    return validJSON
+    if (validJSON) {
+        return validJSON
+    }
 }
 
 function getMD5(data) {
@@ -123,38 +132,11 @@ function getMD5(data) {
     `
 }
 
-function test_getMD5_should_return_div() {
-    // arrange
-    const expected = `
-    <div>
-        <p>md5: md5</p>
-        <p>original: original</p>
-    </div>
-    `
-
-    const obj = {
-        md5: 'md5',
-        original: 'original'
-    }
-
-    // act
-    const result = getMD5(obj)
-
-    // assert
-    if (result !== expected) {
-        console.log(`test_getMD5 - failed`)
-    } else {
-        console.log(`test_getMD5 - passed`)
-    }
-}
-
 async function renderMD5(text) {
     const data = getMD5(
         await urlFetch(`http://md5.jsontest.com/?text=${text}`)
     )
     if (data) {
-        //console.log(data)
-        //document.getElementById('md5').innerHTML = data;
         return data
     }
 }
@@ -222,58 +204,24 @@ async function test_urlFetch_failed() {
     }
 }
 
-function test_getIP_should_return_value() {
-    // arrange
-    const expected = true
-    const obj = {
-        ip: true
-    }
-
-    // act
-    const result = getIP(obj)
-
-    // assert
-    if (result !== expected) {
-        console.log(`test_getIP_should_return_value - failed`)
-    } else {
-        console.log(`test_getIP_should_return_value - passed`)
-    }
-}
-
 function test_createHTMLHeaders_should_format_string_from_obj() {
     // arrange
-    const expected = `
-    <div>
-        <p>X-Cloud-Trace-Context: X-Cloud-Trace-Context</p>
-        <p>Accept: accept</p>
-        <p>Upgrade-Insecure-Requests: Upgrade-Insecure-Requests</p>
-        <p>traceparent: traceparent</p>
-        <p>User-Agent: user-Agent</p>
-        <p>Referer: referer</p>
-        <p>Host: host</p>
-        <p>Accept-Language: Accept-Language</p>
-    </div>
-    `;
-
+    const expected = 'name : Max<br>lastName : Holloway<br>'
     const obj = {
-        ['X-Cloud-Trace-Context']: 'X-Cloud-Trace-Context',
-        accept: 'accept',
-        ['Upgrade-Insecure-Requests']: 'Upgrade-Insecure-Requests',
-        ['traceparent']: 'traceparent',
-        ['user-Agent']: 'user-Agent',
-        ['referer']: 'referer',
-        host: 'host',
-        ['Accept-Language']: 'Accept-Language'
+        name: 'Max',
+        lastName: 'Holloway'
     }
 
     // act
     const result = createHTMLHeaders(obj)
+    console.log(expected.length)
+    console.log(result.length)
 
     // assert
     if (result !== expected) {
-        console.log(`test_createHTMLHeaders_should_format_string_from_obj - failed`)
+        console.log(`failed -> expected: ${expected} -> actual: ${result}`)
     } else {
-        console.log(`test_createHTMLHeaders_should_format_string_from_obj - passed`)
+        console.log(`test_createHTMLHeaders_should_format_string_from_obj_2 - passed`)
     }
 }
 
@@ -305,6 +253,61 @@ function test_getDateTime_should_show_date() {
     }
 }
 
+function test_getValidateJSON_should_read_correct_input() {
+    // arrange
+    const expected = `
+    <div>
+        <p>object_or_array: object_or_array</p>
+        <p>empty: empty</p>
+        <p>parse_time_nanoseconds: parse_time_nanoseconds</p>
+        <p>validate: validate</p>
+        <p>size: size</p>
+    </div>
+    `
+    const obj = {
+        object_or_array: 'object_or_array',
+        empty: 'empty',
+        ['parse_time_nanoseconds']: 'parse_time_nanoseconds',
+        validate: 'validate',
+        size: 'size'
+    }
+
+    // act
+    const result = getValidateJSON(obj)
+
+    // assert
+    if (result !== expected) {
+        console.log(`test_getValidateJSON_should_read_correct_input failed`)
+    } else {
+        console.log(`test_getValidateJSON_should_read_correct_input passed`)
+    }
+}
+
+function test_getMD5_should_return_div() {
+    // arrange
+    const expected = `
+    <div>
+        <p>md5: md5</p>
+        <p>original: original</p>
+    </div>
+    `
+
+    const obj = {
+        md5: 'md5',
+        original: 'original'
+    }
+
+    // act
+    const result = getMD5(obj)
+
+    // assert
+    if (result !== expected) {
+        console.log(`test_getMD5 - failed`)
+    } else {
+        console.log(`test_getMD5 - passed`)
+    }
+}
+
 // test_urlFetch_ok()
 // test_urlFetch_not_ok()
 // test_urlFetch_failed()
@@ -312,7 +315,3 @@ function test_getDateTime_should_show_date() {
 // test_createHTMLHeaders_should_format_string_from_obj()
 // test_getDateTime_should_show_date()
 // test_getMD5_should_return_div()
-
-// renderIPAddress()
-// renderHTMLHeaders()
-// renderDateTime()
