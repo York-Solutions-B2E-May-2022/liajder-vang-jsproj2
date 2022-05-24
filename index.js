@@ -21,7 +21,7 @@ async function renderIPAddress() {
         document.getElementById('userIP').innerHTML += "Can't find your IP"
     }
 }
-//renderIPAddress()
+renderIPAddress()
 
 async function renderHTMLHeaders() {
     const data = createHTMLHeaders(
@@ -31,7 +31,7 @@ async function renderHTMLHeaders() {
         document.getElementById('userHeader').innerHTML += data + `<br>`
     }
 }
-//renderHTMLHeaders()
+renderHTMLHeaders()
 
 async function renderDateTime() {
     const data = getDateTime(
@@ -40,7 +40,7 @@ async function renderDateTime() {
         document.getElementById('date-time').innerHTML = `The Current Date and Time (GMT) is: ${data}`
     }
 }
-//setInterval(renderDateTime, 1000)
+setInterval(renderDateTime, 1000)
 //-----------------Without Side Effects-----------------
 async function urlFetch(url, _fetch = fetch) {
     try {
