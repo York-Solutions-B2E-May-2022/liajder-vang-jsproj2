@@ -1,0 +1,38 @@
+body{
+    background-color: #f5e6e8;
+    margin: 0;
+
+}
+
+#banner {
+    font-family: 'Corben', Georgia, Times, serif;
+    font-size: 2rem;
+    color: #192A51;
+    display: flex;
+    justify-content: center;
+    background-color: #d5c6e0;
+    width: 100%;
+}
+
+#ip-header {
+    font-family: 'Corben', Georgia, Times, serif;
+    margin: 10px;
+}
+
+#user-submit {
+    margin: 10px;
+}
+
+#valid-JSON  {
+    margin: 10px;
+    color: green;
+}
+
+#md5 {
+    margin: 10px;
+    color: red;
+}
+
+#user-form {
+    margin:10px;
+}

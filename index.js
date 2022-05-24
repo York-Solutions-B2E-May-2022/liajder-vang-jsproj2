@@ -26,54 +26,39 @@ function getIP(data) {
     return data?.ip;
 }
 
-function test_getIP_should_return_value() {
-    // arrange
-    const expected = true
-    const obj = {
-        ip: true
-    }
-
-    // act
-    const result = getIP(obj)
-
-    // assert
-    if (result !== expected) {
-        console.log(`test_getIP_should_return_value - failed`)
-    } else {
-        console.log(`test_getIP_should_return_value - passed`)
-    }
-}
-
 async function renderIPAddress() {
     const userIP = await getIP(
         await urlFetch('http://ip.jsontest.com/')
     )
     if (userIP) {
-        document.getElementById('userIP').innerHTML = userIP
+        document.getElementById('userIP').innerHTML += userIP
     } else {
-        document.getElementById('userIP').innerHTML = "Can't find your IP"
+        document.getElementById('userIP').innerHTML += "Can't find your IP"
     }
 }
+
+renderIPAddress()
 
 function createHTMLHeaders(data) {
     let str = ''
     for (let property in data) {
-        str += `${property} : ${data[property]}` + `<br>`
+        str += `${property} : ${data[property]} <br>`
     }
     return str
 }
 
 async function renderHTMLHeaders() {
-     const data = createHTMLHeaders(
+    const data = createHTMLHeaders(
         await urlFetch('http://headers.jsontest.com/')
     )
     if (data) {
-        document.getElementById('userHeader').innerHTML = data
+        document.getElementById('userHeader').innerHTML += data + `<br>`
     }
 }
 
+renderHTMLHeaders()
+
 function getDateTime(data) {
-    console.log(data.time)
     return `
     <div>
         <p>time: ${data?.time}</p>
@@ -87,10 +72,11 @@ async function renderDateTime() {
     const data = getDateTime(
         await urlFetch('http://date.jsontest.com/'))
     if (data) {
-        document.getElementById('date-time').innerHTML = data
+        document.getElementById('date-time').innerHTML = `The Current Time (GMT) is: ${data}`
     }
 }
-//setInterval(renderDateTime, 1000)
+
+setInterval(renderDateTime, 1000)
 
 function getValidateJSON(data) {
     if (data.validate) {
@@ -140,13 +126,12 @@ async function renderMD5(text) {
         return data
     }
 }
-
 //-----------------Test Functions-----------------
 async function test_urlFetch_ok() {
     // arrange
     const expected = true;
     const _fetch = async () => {
-        return({
+        return ({
             ok: true,
             json: async () => {
                 return true;
@@ -159,7 +144,7 @@ async function test_urlFetch_ok() {
 
     // assert
     if (result !== expected) {
-        console.log(`test_urlFetch_ok - failed`)
+        console.log(`test_urlFetch_ok - failed: -> expected: ${expected} -> actual: ${result}`)
     } else {
         console.log(`test_urlFetch_ok - passed`)
     }
@@ -170,7 +155,7 @@ async function test_urlFetch_not_ok() {
     // arrange
     const expected = 'Response not okay'
     const _fetch = async () => {
-        return({
+        return ({
             ok: false
         })
     }
@@ -180,7 +165,7 @@ async function test_urlFetch_not_ok() {
 
     // assert
     if (result !== expected) {
-        console.log(`test_urlFetch_not_ok - failed`)
+        console.log(`test_urlFetch_not_ok - failed: -> expected: ${expected} -> actual: ${result}`)
     } else {
         console.log(`test_urlFetch_not_ok - passed`)
     }
@@ -198,15 +183,33 @@ async function test_urlFetch_failed() {
 
     // arrange
     if (result !== expected) {
-        console.log(`test_urlFetch_failed - failed`)
+        console.log(`test_urlFetch_failed - failed: -> expected: ${expected} -> actual: ${result}`)
     } else {
         console.log(`test_urlFetch_failed - passed`)
     }
 }
 
+function test_getIP_should_return_value() {
+    // arrange
+    const expected = true
+    const obj = {
+        ip: true
+    }
+
+    // act
+    const result = getIP(obj)
+
+    // assert
+    if (result !== expected) {
+        console.log(`test_getIP_should_return_value - failed: -> expected: ${expected} -> actual: ${result}`)
+    } else {
+        console.log(`test_getIP_should_return_value - passed`)
+    }
+}
+
 function test_createHTMLHeaders_should_format_string_from_obj() {
     // arrange
-    const expected = 'name : Max<br>lastName : Holloway<br>'
+    const expected = 'name : Max <br>lastName : Holloway <br>'
     const obj = {
         name: 'Max',
         lastName: 'Holloway'
@@ -214,14 +217,12 @@ function test_createHTMLHeaders_should_format_string_from_obj() {
 
     // act
     const result = createHTMLHeaders(obj)
-    console.log(expected.length)
-    console.log(result.length)
 
     // assert
     if (result !== expected) {
-        console.log(`failed -> expected: ${expected} -> actual: ${result}`)
+        console.log(`test_createHTMLHeaders_should_format_string_from_obj - failed: -> expected: ${expected} -> actual: ${result}`)
     } else {
-        console.log(`test_createHTMLHeaders_should_format_string_from_obj_2 - passed`)
+        console.log(`test_createHTMLHeaders_should_format_string_from_obj - passed`)
     }
 }
 
@@ -242,12 +243,10 @@ function test_getDateTime_should_show_date() {
     }
     // act
     const result = getDateTime(obj)
-    console.log(expected)
-    console.log(result)
 
     // assert
     if (result !== expected) {
-        console.log(`test_getDateTime_should_show_date - failed`)
+        console.log(`test_getDateTime_should_show_date - failed: -> expected ${expected} -> actual ${result}`)
     } else {
         console.log(`test_getDateTime_should_show_date - passed`)
     }
@@ -277,9 +276,9 @@ function test_getValidateJSON_should_read_correct_input() {
 
     // assert
     if (result !== expected) {
-        console.log(`test_getValidateJSON_should_read_correct_input failed`)
+        console.log(`test_getValidateJSON_should_read_correct_input - failed: -> expected ${expected} -> actual: ${result}`)
     } else {
-        console.log(`test_getValidateJSON_should_read_correct_input passed`)
+        console.log(`test_getValidateJSON_should_read_correct_input - passed`)
     }
 }
 
@@ -302,16 +301,17 @@ function test_getMD5_should_return_div() {
 
     // assert
     if (result !== expected) {
-        console.log(`test_getMD5 - failed`)
+        console.log(`test_getMD5 - failed: -> expected: ${expected} -> actual ${result}`)
     } else {
         console.log(`test_getMD5 - passed`)
     }
 }
 
-// test_urlFetch_ok()
-// test_urlFetch_not_ok()
-// test_urlFetch_failed()
-// test_getIP_should_return_value()
-// test_createHTMLHeaders_should_format_string_from_obj()
-// test_getDateTime_should_show_date()
-// test_getMD5_should_return_div()
+test_urlFetch_ok()
+test_urlFetch_not_ok()
+test_urlFetch_failed()
+test_getIP_should_return_value()
+test_createHTMLHeaders_should_format_string_from_obj()
+test_getDateTime_should_show_date()
+test_getValidateJSON_should_read_correct_input()
+test_getMD5_should_return_div()
