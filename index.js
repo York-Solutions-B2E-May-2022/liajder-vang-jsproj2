@@ -1,15 +1,4 @@
-async function urlFetch(url, _fetch = fetch) {
-    try {
-        const response = await _fetch(url);
-        if (!response.ok) {
-            return 'Response not okay'
-        }
-        return await response.json()
-    } catch (error) {
-        return 'Response not found'
-    }
-}
-
+//-----------------Side Effects-----------------
 const submitElem = document.getElementById('user-form')
 
 if (submitElem !== null) {
@@ -22,10 +11,6 @@ if (submitElem !== null) {
     })
 }
 
-function getIP(data) {
-    return data?.ip;
-}
-
 async function renderIPAddress() {
     const userIP = await getIP(
         await urlFetch('http://ip.jsontest.com/')
@@ -36,16 +21,7 @@ async function renderIPAddress() {
         document.getElementById('userIP').innerHTML += "Can't find your IP"
     }
 }
-
 renderIPAddress()
-
-function createHTMLHeaders(data) {
-    let str = ''
-    for (let property in data) {
-        str += `${property} : ${data[property]} <br>`
-    }
-    return str
-}
 
 async function renderHTMLHeaders() {
     const data = createHTMLHeaders(
@@ -55,8 +31,40 @@ async function renderHTMLHeaders() {
         document.getElementById('userHeader').innerHTML += data + `<br>`
     }
 }
-
 renderHTMLHeaders()
+
+async function renderDateTime() {
+    const data = getDateTime(
+        await urlFetch('http://date.jsontest.com/'))
+    if (data) {
+        document.getElementById('date-time').innerHTML = `The Current Date and Time (GMT) is: ${data}`
+    }
+}
+setInterval(renderDateTime, 1000)
+//-----------------Without Side Effects-----------------
+async function urlFetch(url, _fetch = fetch) {
+    try {
+        const response = await _fetch(url);
+        if (!response.ok) {
+            return 'Response not okay'
+        }
+        return await response.json()
+    } catch (error) {
+        return 'Response not found'
+    }
+}
+
+function getIP(data) {
+    return data?.ip;
+}
+
+function createHTMLHeaders(data) {
+    let str = ''
+    for (let property in data) {
+        str += `${property} : ${data[property]} <br>`
+    }
+    return str
+}
 
 function getDateTime(data) {
     return `
@@ -67,16 +75,6 @@ function getDateTime(data) {
     </div>
     `
 }
-
-async function renderDateTime() {
-    const data = getDateTime(
-        await urlFetch('http://date.jsontest.com/'))
-    if (data) {
-        document.getElementById('date-time').innerHTML = `The Current Time (GMT) is: ${data}`
-    }
-}
-
-setInterval(renderDateTime, 1000)
 
 function getValidateJSON(data) {
     if (data.validate) {
