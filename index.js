@@ -21,7 +21,7 @@ async function renderIPAddress() {
         document.getElementById('userIP').innerHTML += "Can't find your IP"
     }
 }
-renderIPAddress()
+//renderIPAddress()
 
 async function renderHTMLHeaders() {
     const data = createHTMLHeaders(
@@ -31,7 +31,7 @@ async function renderHTMLHeaders() {
         document.getElementById('userHeader').innerHTML += data + `<br>`
     }
 }
-renderHTMLHeaders()
+//renderHTMLHeaders()
 
 async function renderDateTime() {
     const data = getDateTime(
@@ -40,7 +40,7 @@ async function renderDateTime() {
         document.getElementById('date-time').innerHTML = `The Current Date and Time (GMT) is: ${data}`
     }
 }
-setInterval(renderDateTime, 1000)
+//setInterval(renderDateTime, 1000)
 //-----------------Without Side Effects-----------------
 async function urlFetch(url, _fetch = fetch) {
     try {
@@ -110,8 +110,8 @@ async function renderValidateJSON(text) {
 function getMD5(data) {
     return `
     <div>
-        <p>md5: ${data.md5}</p>
-        <p>original: ${data.original}</p>
+        <p>md5: ${data?.md5}</p>
+        <p>original: ${data?.original}</p>
     </div>
     `
 }
@@ -205,6 +205,22 @@ function test_getIP_should_return_value() {
     }
 }
 
+function test_getIP_invalid_input() {
+    // arrange
+    const expected = undefined
+    const testData = ''
+
+    // act
+    const result = getIP(testData)
+
+    // assert
+    if (result !== expected) {
+        console.log(`test_getIP_invalid_input - failed: -> expected: ${expected} -> actual ${result}`)
+    } else {
+        console.log('test_getIP_invalid_input - passed')
+    }
+}
+
 function test_createHTMLHeaders_should_format_string_from_obj() {
     // arrange
     const expected = 'name : Max <br>lastName : Holloway <br>'
@@ -221,6 +237,20 @@ function test_createHTMLHeaders_should_format_string_from_obj() {
         console.log(`test_createHTMLHeaders_should_format_string_from_obj - failed: -> expected: ${expected} -> actual: ${result}`)
     } else {
         console.log(`test_createHTMLHeaders_should_format_string_from_obj - passed`)
+    }
+}
+
+function test_createHTMLHeaders_should_return_empty_string() {
+    // arrange
+    const expected = ''
+    const testData = ''
+
+    // act
+    const result = createHTMLHeaders(testData)
+
+    // assert
+    if (result !== expected) {
+        console.log(`test_createHTMLHeaders_should_return_empty_string - failed: -> expected: ${expected} -> actual ${result}`)
     }
 }
 
@@ -247,6 +277,26 @@ function test_getDateTime_should_show_date() {
         console.log(`test_getDateTime_should_show_date - failed: -> expected ${expected} -> actual ${result}`)
     } else {
         console.log(`test_getDateTime_should_show_date - passed`)
+    }
+}
+
+function test_getDateTime_invalid_input() {
+    // arrange
+    const expected = `
+    <div>
+        <p>time: undefined</p>
+        <p>milliseconds_since_epoch: undefined</p>
+        <p>date: undefined</p>
+    </div>
+    `
+    const testData = 'fsdfdsafas'
+
+    // act
+    const result = getDateTime(testData)
+
+    // assert
+    if (result !== expected) {
+        console.log(`test_getDateTime_invalid_input - failed: -> expected ${expected} -> actual: ${result}`)
     }
 }
 
@@ -305,11 +355,41 @@ function test_getMD5_should_return_div() {
     }
 }
 
+function test_getMD5_should_return_undefined() {
+    // arrange
+    const expected = `
+    <div>
+        <p>md5: undefined</p>
+        <p>original: undefined</p>
+    </div>
+    `
+    const obj= 'fdsafasfda'
+
+    // act
+    const result = getMD5(obj)
+
+    // assert
+    if (result !== expected) {
+        console.log(`test_getMD5_should_return_undefined - failed: -> expected: ${expected} -> actual ${result}`)
+    } else{
+        console.log(`test_getMD5_should_return_undefined - passed`)
+    }
+}
+
 test_urlFetch_ok()
 test_urlFetch_not_ok()
 test_urlFetch_failed()
+
 test_getIP_should_return_value()
+test_getIP_invalid_input()
+
 test_createHTMLHeaders_should_format_string_from_obj()
+test_createHTMLHeaders_should_return_empty_string()
+
 test_getDateTime_should_show_date()
+test_getDateTime_invalid_input()
+
 test_getValidateJSON_should_read_correct_input()
+
 test_getMD5_should_return_div()
+test_getMD5_should_return_undefined()
